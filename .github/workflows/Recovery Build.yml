@@ -18,7 +18,7 @@ on:
       DEVICE_TREE_BRANCH:
         description: 'DEVICE_TREE_BRANCH'
         required: true
-        default: 'android-12.1'
+        default: 'a13'
       DEVICE_PATH:
         description: 'DEVICE_PATH'
         required: true
@@ -40,7 +40,11 @@ on:
       BUILD_TARGET:
         description: 'BUILD_TARGET'
         required: true
-        default: 'recovery'
+        default: 'vendorboot'
+      BUILD_TARGET_OUT_vendor:
+        description: 'BUILD_TARGET'
+        required: true
+        default: 'vendor_boot'
 
 jobs:
   build:
@@ -59,7 +63,7 @@ jobs:
         echo "Device Path: ${{ github.event.inputs.DEVICE_PATH }}"
         echo "Device Name: ${{ github.event.inputs.DEVICE_NAME }}"
         echo "Makefile Name: ${{ github.event.inputs.MAKEFILE_NAME }}"
-        echo "Build Target: ${{ github.event.inputs.BUILD_TARGET }}.img"
+        echo "Build Target: ${{ github.event.inputs.BUILD_TARGET_OUT_vendor }}.img"
         echo "::endgroup::"
  
     # You might want to Checkout your repo first, but not mandatory
@@ -100,8 +104,8 @@ jobs:
         mkdir workspace
         cd workspace
         echo "workspace-folder=$(pwd)" >> $GITHUB_OUTPUT
-        git config --global user.name "ghazzor@kartik"
-        git config --global user.email "kartikhis8o@gmail.com"
+        git config --global user.name "andrejkuroglo8"
+        git config --global user.email "andrejkuroglo8@gmail.com"
         repo init --depth=1 -u ${{ github.event.inputs.MANIFEST_URL }} -b ${{ github.event.inputs.MANIFEST_BRANCH }}
       id: pwd
           
@@ -154,7 +158,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: | 
-          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/${{ github.event.inputs.BUILD_TARGET }}.img
+          workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/${{ github.event.inputs.BUILD_TARGET_OUT_vendor }}.img
           workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/*.zip
           workspace/out/target/product/${{ github.event.inputs.DEVICE_NAME }}/*vendor*.img
         name: ${{ github.event.inputs.DEVICE_NAME }}-${{ github.run_id }}
